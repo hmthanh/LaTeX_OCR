@@ -97,6 +97,8 @@ def call_model(args, model, image_resizer, tokenizer, img=None):
         img = np.array(pad(img).convert('RGB'))
         t = test_transform(image=img)['image'][:1].unsqueeze(0)
     im = t.to(args.device)
+    print(np.shape(im))
+
 
     with torch.no_grad():
         model.eval()
