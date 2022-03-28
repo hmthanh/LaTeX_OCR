@@ -1,3 +1,4 @@
 {
-    "python.defaultInterpreterPath": "/home/lap14784/miniconda3/envs/colab/python3.7"
+    // "python.defaultInterpreterPath": "/home/lap14784/miniconda3/envs/colab/python3.7",
+    "terminal.integrated.inheritEnv": false
 }

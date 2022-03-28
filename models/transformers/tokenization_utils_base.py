@@ -31,7 +31,6 @@ from .utils import (
     is_flax_available,
     is_offline_mode,
     is_remote_url,
-    is_tf_available,
     is_tokenizers_available,
     is_torch_available,
     logging,
@@ -44,10 +43,6 @@ from .utils.generic import _is_jax, _is_numpy, _is_tensorflow, _is_torch, _is_to
 if TYPE_CHECKING:
     if is_torch_available():
         import torch
-    if is_tf_available():
-        import tensorflow as tf
-    if is_flax_available():
-        import jax.numpy as jnp  # noqa: F401
 
 
 if is_tokenizers_available():
@@ -600,16 +595,7 @@ class BatchEncoding(UserDict):
             tensor_type = TensorType(tensor_type)
 
         # Get a function reference for the correct framework
-        if tensor_type == TensorType.TENSORFLOW:
-            if not is_tf_available():
-                raise ImportError(
-                    "Unable to convert output to TensorFlow tensors format, TensorFlow is not installed."
-                )
-            import tensorflow as tf
-
-            as_tensor = tf.constant
-            is_tensor = tf.is_tensor
-        elif tensor_type == TensorType.PYTORCH:
+        if tensor_type == TensorType.PYTORCH:
             if not is_torch_available():
                 raise ImportError(
                     "Unable to convert output to PyTorch tensors format, PyTorch is not installed.")
@@ -617,14 +603,6 @@ class BatchEncoding(UserDict):
 
             as_tensor = torch.tensor
             is_tensor = torch.is_tensor
-        elif tensor_type == TensorType.JAX:
-            if not is_flax_available():
-                raise ImportError(
-                    "Unable to convert output to JAX tensors format, JAX is not installed.")
-            import jax.numpy as jnp  # noqa: F811
-
-            as_tensor = jnp.array
-            is_tensor = _is_jax
         else:
             as_tensor = np.asarray
             is_tensor = _is_numpy
@@ -2686,9 +2664,7 @@ class PreTrainedTokenizerBase(SpecialTokensMixin, PushToHubMixin):
                     break
         # At this state, if `first_element` is still a list/tuple, it's an empty one so there is nothing to do.
         if not isinstance(first_element, (int, list, tuple)):
-            if is_tf_available() and _is_tensorflow(first_element):
-                return_tensors = "tf" if return_tensors is None else return_tensors
-            elif is_torch_available() and _is_torch(first_element):
+            if is_torch_available() and _is_torch(first_element):
                 return_tensors = "pt" if return_tensors is None else return_tensors
             elif isinstance(first_element, np.ndarray):
                 return_tensors = "np" if return_tensors is None else return_tensors

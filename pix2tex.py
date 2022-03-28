@@ -19,7 +19,7 @@ from timm.models.resnetv2 import ResNetV2
 from timm.models.layers import StdConv2dSame
 
 from dataset.latex2png import tex2pil
-from models import get_model
+from model_VisionTransformer import get_model
 from utils import *
 
 last_pic = None
